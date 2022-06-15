@@ -26,3 +26,17 @@ spec:
     image: alphabet5/tools
     imagePullPolicy: Always
 ```
+
+## Example Usage
+
+```bash
+~ % kubectl apply -f ./MyManifest.yaml
+pod/tools created
+```
+
+## Remote Shell In Container
+
+```bash
+~ % kubectl exec --stdin --tty -n default tools -- bash
+root@tools:/#
+```
