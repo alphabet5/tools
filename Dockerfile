@@ -14,7 +14,10 @@ RUN \
     net-tools \
     sudo \
     openssh-server \
-    vim && \
+    vim \
+    traceroute \
+    mtr \
+    iproute2 && \
     apt-get autoremove && \
     apt-get clean && \
     rm -rf \
@@ -57,12 +60,21 @@ RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/s
     ./get_helm.sh && \
     rm ./get_helm.sh
 
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mv /root/.local/bin/uv /usr/local/bin/uv && \
+    mv /root/.local/bin/uvx /usr/local/bin/uvx
 
-RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test 
-RUN service ssh start
 
-RUN  echo 'test:test' | chpasswd
+RUN userdel ubuntu && \
+    rm -rf /home/ubuntu
+
+# RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test 
+# RUN service ssh start
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd","-De"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
